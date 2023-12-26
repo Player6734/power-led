@@ -1,0 +1,11 @@
+[Unit]
+Description=Create a shutdown flag
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/touch /tmp/shutdown-flag
+
+[Install]
+WantedBy=sysinit.target
