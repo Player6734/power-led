@@ -49,19 +49,84 @@ ask_laptop_generation() {
     done
 }
 
+determine_laptop_generation() {
+    cpu_info=$(grep -m 1 'model name' /proc/cpuinfo)
+    echo "Detected CPU: $cpu_info"
+
+    if [[ $cpu_info == *"11th Gen"* ]]; then
+        BOARD="hx20" # 11th Generation
+        echo "Detected 11th Generation Intel Processor. Setting BOARD to hx20."
+    elif [[ $cpu_info == *"12th Gen"* ]]; then
+        BOARD="hx30" # 12th Generation
+        echo "Detected 12th Generation Intel Processor. Setting BOARD to hx30."
+    else
+        echo "Unable to automatically determine the Framework Laptop generation."
+        echo "Falling back to manual selection."
+        ask_laptop_generation # Fallback to manual selection if automatic detection fails
+    fi
+}
+
+
+
 # Function to detect Linux distribution and install packages
 install_packages() {
-    if ask_yes_or_no "Are the dependencies already installed?"; then
-        echo "Skipping dependency installation."
-        return 0
-    fi
+    echo "Checking for installed dependencies..."
 
-    if grep -qEi "(fedora|red hat|centos|rhel|nobara)" /etc/os-release; then
-        echo "Detected Fedora, Red Hat, CentOS, or similar distribution."
-        sudo dnf install arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkgconfig
-    elif grep -qEi "(debian|ubuntu|mint|elementary)" /etc/os-release; then
-        echo "Detected Debian, Ubuntu, Mint, elementary OS, or similar distribution."
-        sudo apt install gcc-arm-none-eabi libftdi1-dev build-essential pkg-config
+    # Distributions typically using dnf or yum
+    if grep -qEi "(fedora|red hat|rhel|centos|oracle|scientific|cern|berry|elastix|clearos|frameos|fermi|turbolinux)" /etc/os-release; then
+        echo "Detected a Fedora, Red Hat, or similar distribution."
+         packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkgconfig)
+         for pkg in "${packages[@]}"; do
+             if ! dnf list installed "$pkg" &> /dev/null; then
+                 echo "Installing $pkg"
+                 sudo dnf install -y "$pkg"
+             else
+                 echo "$pkg is already installed."
+             fi
+         done
+
+    # Distributions typically using apt-get/apt
+    elif grep -qEi "(debian|ubuntu|lubuntu|xubuntu|kubuntu|linux mint|knoppix|deepin|peppermint|bodhi linux)" /etc/os-release; then
+        echo "Detected Debian, Ubuntu, or a similar distribution."
+        packages=(gcc-arm-none-eabi libftdi1-dev build-essential pkg-config)
+        for pkg in "${packages[@]}"; do
+              if ! dpkg -l "$pkg" &> /dev/null; then
+                 echo "Installing $pkg"
+                 sudo apt install -y "$pkg"
+             else
+                 echo "$pkg is already installed."
+             fi
+         done
+
+
+    # Distributions typically using zypper
+    elif grep -qEi "(suse|opensuse|mageia|pclinuxos)" /etc/os-release; then
+        echo "Detected SUSE, OpenSUSE, Mageia, or PCLinuxOS."
+        packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkg-config)
+        for pkg in "${packages[@]}"; do
+             if ! zypper se --installed-only "$pkg" &> /dev/null; then
+                 echo "Installing $pkg"
+                 sudo zypper install -y "$pkg"
+             else
+                 echo "$pkg is already installed."
+             fi
+         done
+
+
+    # Arch Linux and derivatives
+    elif grep -qEi "(arch|archbang|archex|archman|arch linux 32|arch linux arm|archstrike|arcolinux|artix|blackarch|bluestar|chimeraos|ctlos|crystal|endeavouros|garuda|hyperbola|instantos|kaos|manjaro|msys2|obarun|parabola|puppyrus-a|rebornos|snal|steamos|systemrescue|tearch|ubos)" /etc/os-release; then
+        echo "Detected Arch Linux or an Arch-based distribution."
+        packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi make pkg-config)
+         for pkg in "${packages[@]}"; do
+             if ! pacman -Qi "$pkg" &> /dev/null; then
+                 echo "Installing $pkg"
+                 sudo pacman -S --noconfirm "$pkg"
+             else
+                 echo "$pkg is already installed."
+             fi
+         done
+
+
     else
         echo "Unsupported distribution. Please manually install the required packages."
         echo "Packages required: gcc-arm-none-eabi libftdi1-dev build-essential pkg-config"
@@ -69,6 +134,7 @@ install_packages() {
     fi
     return 0
 }
+
 
 
 
@@ -111,7 +177,7 @@ else
         fi
 
         # Ask for laptop generation and set BOARD variable accordingly
-        ask_laptop_generation
+        determine_laptop_generation
 
         # Execute make with the appropriate board
         make BOARD=$BOARD CROSS_COMPILE=arm-none-eabi-
