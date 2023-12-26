@@ -169,7 +169,7 @@ if [ -n "$ectool_path" ]; then
     fi
 else
     # Ask if the user wants to proceed with the installation
-    if ask_yes_or_no "ectool is not found. Would you like to install it?"; then
+    if ask_yes_or_no "\e[32mectool \e[34mis not found. Would you like to install it?\e[0m"; then
         echo -e "\e[1m\e[32mStarting the installation process...\e[0m"
 
         # Clone the repository
