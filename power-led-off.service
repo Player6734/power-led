@@ -1,5 +1,7 @@
 [Unit]
 Description=Turn off power LED on shutdown or sleep
+Requires=wpa_supplicant.service
+After=wpa_supplicant.service
 Before=shutdown.target sleep.target
 
 [Service]
