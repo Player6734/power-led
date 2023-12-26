@@ -1,0 +1,12 @@
+[Unit]
+Description=Set power LED color based on battery level at startup or wake-up
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash /usr/local/bin/power-led-once.sh
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=suspend.target
+

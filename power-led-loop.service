@@ -1,0 +1,9 @@
+[Unit]
+Description=Changes the color of the power led with battery level
+
+[Service]
+ExecStart=/usr/bin/bash /usr/local/bin/power-led-loop.sh
+
+[Install]
+WantedBy=multi-user.target
+
