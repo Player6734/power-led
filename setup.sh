@@ -118,6 +118,7 @@ else
 
         # Move the utility to the local bin
         sudo mv build/$BOARD/util/ectool /usr/local/bin/
+        sudo restorecon -v /usr/local/bin/ectool
 
         # Clean up
         rm -rf /tmp/ectool_setup
