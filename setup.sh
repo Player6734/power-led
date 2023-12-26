@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [[ $EUID -ne 0 ]]; then
    echo -e "\e[1m\e[31mThis script must be run as root\e[0m"
    exit 1
@@ -37,9 +36,9 @@ ask_yes_or_no() {
 # Function to ask for laptop generation
 ask_laptop_generation() {
     while true; do
-        echo "Please specify your Framework Laptop generation:"
-        echo "1. 11th Generation"
-        echo "2. 12th Generation"
+        echo -e "\e[1m\e[32mPlease specify your Framework Laptop generation:\e[0m"
+        echo -e "\e[1m\e[32m1. 11th Generation\e[0m"
+        echo -e "\e[1m\e[32m2. 12th Generation\e[0m"
         read -p "Enter your choice (1/2): " gen_choice
         case "$gen_choice" in
             1 ) BOARD="hx20"; break;; # 11th Generation
@@ -51,101 +50,92 @@ ask_laptop_generation() {
 
 determine_laptop_generation() {
     cpu_info=$(grep -m 1 'model name' /proc/cpuinfo)
-    echo "Detected CPU: $cpu_info"
+    echo -e "\e[1m\e[34mDetected CPU: \e[34m$cpu_info\e[0m"
 
     if [[ $cpu_info == *"11th Gen"* ]]; then
         BOARD="hx20" # 11th Generation
-        echo "Detected 11th Generation Intel Processor. Setting BOARD to hx20."
+        echo -e "\e[1m\e[34mDetected 11th Generation Intel Processor. Setting BOARD to hx20.\e[0m"
     elif [[ $cpu_info == *"12th Gen"* ]]; then
         BOARD="hx30" # 12th Generation
-        echo "Detected 12th Generation Intel Processor. Setting BOARD to hx30."
+        echo -e "\e[1m\e[34mDetected 12th Generation Intel Processor. Setting BOARD to hx30.\e[0m"
     else
         echo -e "\e[1m\e[31mUnable to automatically determine the Framework Laptop generation.\e[0m"
-        echo "Falling back to manual selection."
+        echo -e "\e[1m\e[34mFalling back to manual selection.\e[0m"
         ask_laptop_generation # Fallback to manual selection if automatic detection fails
     fi
 }
 
-
-
 # Function to detect Linux distribution and install packages
 install_packages() {
-    echo "Checking for installed dependencies..."
+    echo -e "\e[1m\e[32mChecking for installed dependencies...\e[0m"
 
     # Distributions typically using dnf or yum
     if grep -qEi "(fedora|red hat|rhel|centos|oracle|scientific|cern|berry|elastix|clearos|frameos|fermi|turbolinux)" /etc/os-release; then
-        echo "Detected a Fedora, Red Hat, or similar distribution."
-         packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkgconfig)
-         for pkg in "${packages[@]}"; do
-             if ! dnf list installed "$pkg" &> /dev/null; then
-                 echo "Installing $pkg"
-                 sudo dnf install -y "$pkg" || {
-                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
-                     return 1
-                 }
-             else
-                 echo "$pkg is already installed."
-             fi
-         done
-
+        echo -e "\e[1m\e[32mDetected a Fedora, Red Hat, or similar distribution.\e[0m"
+        packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkgconfig)
+        for pkg in "${packages[@]}"; do
+            if ! dnf list installed "$pkg" &> /dev/null; then
+                echo -e "\e[1m\e[32mInstalling \e[34m$pkg\e[0m"
+                sudo dnf install -y "$pkg" || {
+                    echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
+                    return 1
+                }
+            else
+                echo -e "\e[1m\e[32m$pkg is already installed.\e[0m"
+            fi
+        done
 
     # Distributions typically using apt-get/apt
-   elif grep -qEi "(debian|ubuntu|lubuntu|xubuntu|kubuntu|linux mint|knoppix|deepin|peppermint|bodhi linux)" /etc/os-release; then
-         echo "Detected Debian, Ubuntu, or a similar distribution."
-         packages=(gcc-arm-none-eabi libftdi1-dev build-essential pkg-config)
-         for pkg in "${packages[@]}"; do
-             if ! dpkg -l "$pkg" &> /dev/null; then
-                 echo "Installing $pkg"
-                 sudo apt install -y "$pkg" || {
-                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
-                     return 1
-                 }
-             else
-                 echo "$pkg is already installed."
-             fi
-         done
-
-
+    elif grep -qEi "(debian|ubuntu|lubuntu|xubuntu|kubuntu|linux mint|knoppix|deepin|peppermint|bodhi linux)" /etc/os-release; then
+        echo -e "\e[1m\e[32mDetected Debian, Ubuntu, or a similar distribution.\e[0m"
+        packages=(gcc-arm-none-eabi libftdi1-dev build-essential pkg-config)
+        for pkg in "${packages[@]}"; do
+            if ! dpkg -l "$pkg" &> /dev/null; then
+                echo -e "\e[1m\e[32mInstalling \e[34m$pkg\e[0m"
+                sudo apt install -y "$pkg" || {
+                    echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
+                    return 1
+                }
+            else
+                echo -e "\e[1m\e[32m$pkg is already installed.\e[0m"
+            fi
+        done
 
     # Distributions typically using zypper
     elif grep -qEi "(suse|opensuse|mageia|pclinuxos)" /etc/os-release; then
-        echo "Detected SUSE, OpenSUSE, Mageia, or PCLinuxOS."
+        echo -e "\e[1m\e[32mDetected SUSE, OpenSUSE, Mageia, or PCLinuxOS.\e[0m"
         packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkg-config)
-         for pkg in "${packages[@]}"; do
-             if ! zypper se --installed-only "$pkg" &> /dev/null; then
-                 echo "Installing $pkg"
-                 sudo zypper install -y "$pkg" || {
-                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
-                     return 1
-                 }
-             else
-                 echo "$pkg is already installed."
-             fi
-         done
-
-
+        for pkg in "${packages[@]}"; do
+            if ! zypper se --installed-only "$pkg" &> /dev/null; then
+                echo -e "\e[1m\e[32mInstalling \e[34m$pkg\e[0m"
+                sudo zypper install -y "$pkg" || {
+                    echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
+                    return 1
+                }
+            else
+                echo -e "\e[1m\e[32m$pkg is already installed.\e[0m"
+            fi
+        done
 
     # Arch Linux and derivatives
-   elif grep -qEi "(arch|archbang|archex|archman|arch linux 32|arch linux arm|archstrike|arcolinux|artix|blackarch|bluestar|chimeraos|ctlos|crystal|endeavouros|garuda|hyperbola|instantos|kaos|manjaro|msys2|obarun|parabola|puppyrus-a|rebornos|snal|steamos|systemrescue|tearch|ubos)" /etc/os-release; then
-      echo "Detected Arch Linux or an Arch-based distribution."
-      packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi make pkg-config)
+    elif grep -qEi "(arch|archbang|archex|archman|arch linux 32|arch linux arm|archstrike|arcolinux|artix|blackarch|bluestar|chimeraos|ctlos|crystal|endeavouros|garuda|hyperbola|instantos|kaos|manjaro|msys2|obarun|parabola|puppyrus-a|rebornos|snal|steamos|systemrescue|tearch|ubos)" /etc/os-release; then
+        echo -e "\e[1m\e[32mDetected Arch Linux or an Arch-based distribution.\e[0m"
+        packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi make pkg-config)
         for pkg in "${packages[@]}"; do
             if ! pacman -Qi "$pkg" &> /dev/null; then
-                echo "Installing $pkg"
+                echo -e "\e[1m\e[32mInstalling \e[34m$pkg\e[0m"
                 sudo pacman -S --noconfirm "$pkg" || {
                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
                     return 1
                 }
             else
-                echo "$pkg is already installed."
+                echo -e "\e[1m\e[32m$pkg is already installed.\e[0m"
             fi
         done
 
-
-
     else
         echo -e "\e[1m\e[31mUnsupported distribution. Please manually install the required packages.\e[0m"
-        echo "Packages required: gcc-arm-none-eabi libftdi1-dev build-essential pkg-config"
+        echo -e "\e[1m\e[34mPackages required: \e[32mgcc-arm-none-eabi libftdi1-dev build-essential pkg-config\e[34m\e[0m"
         return 1
     fi
     return 0
@@ -163,24 +153,24 @@ file_exists() {
 for file in "${required_files[@]}"; do
     if ! file_exists "$file"; then
         echo -e "\e[1m\e[31mRequired file not found: \e[34m$file\e[31m\e[0m"
-        echo "Please run this script in the direcotry where the script and service files are."
-        echo "Current directory: $SETUP_DIR"
-        exit 10
+        echo -e "\e[34mPlease run this script in the directory where the script and service files are.\e[0m"
+        echo -e "\e[34mCurrent directory: \e[32m$SETUP_DIR\e[34m.\e[0m"
+        exit 1
     fi
 done
 
 # Check if ectool exists
 ectool_path=$(which ectool)
 if [ -n "$ectool_path" ]; then
-    echo "Found ectool at $ectool_path."
+    echo -e "\e[1m\e[32mFound ectool at \e[34m$ectool_path\e[32m.\e[0m"
     if [ "$ectool_path" != "/usr/local/bin/ectool" ]; then
-        echo "Moving ectool to /usr/local/bin."
+        echo -e "\e[1m\e[32mMoving ectool to \e[34m/usr/local/bin\e[32m.\e[0m"
         sudo mv "$ectool_path" "/usr/local/bin/ectool"
     fi
 else
     # Ask if the user wants to proceed with the installation
     if ask_yes_or_no "ectool is not found. Would you like to install it?"; then
-        echo "Starting the installation process..."
+        echo -e "\e[1m\e[32mStarting the installation process...\e[0m"
 
         # Clone the repository
         git clone https://github.com/FrameworkComputer/EmbeddedController.git /tmp/ectool_setup/
@@ -206,7 +196,7 @@ else
         rm -rf /tmp/ectool_setup
         cd $SETUP_DIR
 
-        echo " ectool installation complete."
+        echo -e "\e[1m\e[32mectool installation complete.\e[0m"
     else
         echo -e "\e[1m\e[31mInstallation aborted.\e[0m"
     fi
@@ -215,28 +205,28 @@ fi
 
 
 
-echo "marking scripts as executable"
+echo -e "\e[1m\e[32mmarking scripts as executable\e[0m"
 chmod +x $SH_PLON
 chmod +x $SH_PLL
-echo "moving scripts to new directory. (/usr/local/bin/)"
+echo -e "\e[1m\e[32mmoving scripts to new directory. (/usr/local/bin/)\e[0m"
 mv $SH_PLON /usr/local/bin/
 mv $SH_PLL /usr/local/bin/
 
-echo "moving service files to new directory."
-echo "(/etc/systemd/system/)"
+echo -e "\e[1m\e[32mmoving service files to new directory.\e[0m"
+echo -e "\e[1m\e[32m(/etc/systemd/system/)\e[0m"
 mv $PLL /etc/systemd/system/
 mv $PLOFF /etc/systemd/system/
 mv $PLON /etc/systemd/system/
 mv $CSF /etc/systemd/system/
 
-echo "enabling $PLOFF"
+echo -e "\e[1m\e[32menabling $PLOFF\e[0m"
 restorecon -v /etc/systemd/system/$PLOFF
 systemctl enable --now $PLOFF
 
-echo "enabling $PLL"
+echo -e "\e[1m\e[32menabling $PLL\e[0m"
 restorecon -v /etc/systemd/system/$PLL
 systemctl enable --now $PLL
 
-echo "enabling $PLON"
+echo -e "\e[1m\e[32menabling $PLON\e[0m"
 restorecon -v /etc/systemd/system/$PLON
 systemctl enable --now $PLON
