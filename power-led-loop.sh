@@ -1,5 +1,4 @@
 #!/bin/bash
-sudo su
 previouslevel=0
 while true
 do
