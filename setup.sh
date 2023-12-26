@@ -10,6 +10,7 @@ fi
 PLL="power-led-loop.service"
 PLOFF="power-led-off.service"
 PLON="power-led-on.service"
+CSF="create-shutdown-flag.service"
 SH_PLL="power-led-loop.sh"
 SH_PLON="power-led-on.sh"
 ECT_DIR="/usr/local/bin/ectool"
@@ -20,6 +21,7 @@ required_files=(
     "$PLON"
     "$SH_PLL"
     "$SH_PLON"
+    "$CSF"  
 )
 
 # Function to ask yes/no question
@@ -227,15 +229,20 @@ echo "(/etc/systemd/system/)"
 mv $PLL /etc/systemd/system/
 mv $PLOFF /etc/systemd/system/
 mv $PLON /etc/systemd/system/
+mv $CSF /etc/systemd/system/
 
-echo "enabling power-led-off"
+echo "enabling $PLOFF"
 restorecon -v /etc/systemd/system/$PLOFF
 systemctl enable --now $PLOFF
 
-echo "enabling power-led-loop"
+echo "enabling $PLL"
 restorecon -v /etc/systemd/system/$PLL
 systemctl enable --now $PLL
 
-echo "enabling power-led-on"
+echo "enabling $PLON"
 restorecon -v /etc/systemd/system/$PLON
 systemctl enable --now $PLON
+
+echo "enabling $CSF"
+restorecon -v /etc/systemd/system/$CSF
+systemctl enable --now $CSF
