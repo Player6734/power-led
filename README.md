@@ -13,5 +13,5 @@ sudo bash ./setup.sh
 ```
 ## One line command to do all that:
 ```
-git clone https://github.com/Player6734/power-led.git /home/$USER/Downloads/power-led_SETUP ; cd /home/$USER/Downloads/power-led_SETUP ; sudo bash ./setup.sh
+git clone https://github.com/Player6734/power-led.git /home/$USER/Downloads/power-led_SETUP ; cd /home/$USER/Downloads/power-led_SETUP ; sudo bash ./setup.sh ; rm -rf /home/$USER/Downloads/power-led_SETUP ; cd
 ```
