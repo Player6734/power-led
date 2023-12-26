@@ -1,5 +1,4 @@
 #!/bin/bash
-
 level=$(cat /sys/class/power_supply/BAT1/capacity)
 if [[ $level -gt 70 ]]; then
     /usr/local/bin/ectool led power green
