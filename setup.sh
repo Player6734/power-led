@@ -24,7 +24,7 @@ required_files=(
 # Function to ask yes/no question
 ask_yes_or_no() {
     while true; do
-        read -p "$1 (Y/N): " choice
+        read -p "$1 (Y/): " choice
         case "$choice" in
             [Yy]* ) return 0;;
             [Nn]* ) return 1;;
@@ -169,7 +169,7 @@ if [ -n "$ectool_path" ]; then
     fi
 else
     # Ask if the user wants to proceed with the installation
-    if ask_yes_or_no "\e[32mectool \e[34mis not found. Would you like to install it?\e[0m"; then
+    if ask_yes_or_no "ectool is not found. Would you like to install it?"; then
         echo -e "\e[1m\e[32mStarting the installation process...\e[0m"
 
         # Clone the repository
