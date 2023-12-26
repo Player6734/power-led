@@ -228,10 +228,6 @@ mv $PLL /etc/systemd/system/
 mv $PLOFF /etc/systemd/system/
 mv $PLON /etc/systemd/system/
 
-echo "enabling power-led-on"
-restorecon -v /etc/systemd/system/$PLON
-systemctl enable --now $PLON
-
 echo "enabling power-led-off"
 restorecon -v /etc/systemd/system/$PLOFF
 systemctl enable --now $PLOFF
@@ -239,3 +235,7 @@ systemctl enable --now $PLOFF
 echo "enabling power-led-loop"
 restorecon -v /etc/systemd/system/$PLL
 systemctl enable --now $PLL
+
+echo "enabling power-led-on"
+restorecon -v /etc/systemd/system/$PLON
+systemctl enable --now $PLON
