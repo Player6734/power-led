@@ -1,4 +1,5 @@
 #!/bin/bash
+/bin/rm -f /tmp/shutdown-flag
 level=$(cat /sys/class/power_supply/BAT1/capacity)
 if [[ $level -gt 70 ]]; then
     /usr/local/bin/ectool led power green
