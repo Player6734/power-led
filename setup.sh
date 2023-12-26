@@ -2,7 +2,7 @@
 
 
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root"
+   echo -e "\e[1m\e[31mThis script must be run as root\e[0m"
    exit 1
 fi
 
@@ -29,7 +29,7 @@ ask_yes_or_no() {
         case "$choice" in
             [Yy]* ) return 0;;
             [Nn]* ) return 1;;
-            * ) echo "Please answer yes or no.";;
+            * ) echo -e "\e[1m\e[31mPlease answer yes or no.\e[0m";;
         esac
     done
 }
@@ -44,7 +44,7 @@ ask_laptop_generation() {
         case "$gen_choice" in
             1 ) BOARD="hx20"; break;; # 11th Generation
             2 ) BOARD="hx30"; break;; # 12th Generation
-            * ) echo "Invalid choice. Please enter 1 for 11th Generation or 2 for 12th Generation.";;
+            * ) echo -e "\e[1m\e[31mInvalid choice. Please enter 1 for 11th Generation or 2 for 12th Generation.\e[0m";;
         esac
     done
 }
@@ -60,7 +60,7 @@ determine_laptop_generation() {
         BOARD="hx30" # 12th Generation
         echo "Detected 12th Generation Intel Processor. Setting BOARD to hx30."
     else
-        echo "Unable to automatically determine the Framework Laptop generation."
+        echo -e "\e[1m\e[31mUnable to automatically determine the Framework Laptop generation.\e[0m"
         echo "Falling back to manual selection."
         ask_laptop_generation # Fallback to manual selection if automatic detection fails
     fi
@@ -80,7 +80,7 @@ install_packages() {
              if ! dnf list installed "$pkg" &> /dev/null; then
                  echo "Installing $pkg"
                  sudo dnf install -y "$pkg" || {
-                     echo "Failed to install $pkg. Please check your package manager and repositories."
+                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
                      return 1
                  }
              else
@@ -97,7 +97,7 @@ install_packages() {
              if ! dpkg -l "$pkg" &> /dev/null; then
                  echo "Installing $pkg"
                  sudo apt install -y "$pkg" || {
-                     echo "Failed to install $pkg. Please check your package manager and repositories."
+                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
                      return 1
                  }
              else
@@ -115,7 +115,7 @@ install_packages() {
              if ! zypper se --installed-only "$pkg" &> /dev/null; then
                  echo "Installing $pkg"
                  sudo zypper install -y "$pkg" || {
-                     echo "Failed to install $pkg. Please check your package manager and repositories."
+                     echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
                      return 1
                  }
              else
@@ -133,7 +133,7 @@ install_packages() {
             if ! pacman -Qi "$pkg" &> /dev/null; then
                 echo "Installing $pkg"
                 sudo pacman -S --noconfirm "$pkg" || {
-                    echo "Failed to install $pkg. Please check your package manager and repositories."
+                    echo -e "\e[1m\e[31mFailed to install \e[34m$pkg\e[31m. Please check your package manager and repositories.\e[0m"
                     return 1
                 }
             else
@@ -144,7 +144,7 @@ install_packages() {
 
 
     else
-        echo "Unsupported distribution. Please manually install the required packages."
+        echo -e "\e[1m\e[31mUnsupported distribution. Please manually install the required packages.\e[0m"
         echo "Packages required: gcc-arm-none-eabi libftdi1-dev build-essential pkg-config"
         return 1
     fi
@@ -162,7 +162,7 @@ file_exists() {
 # Check for all required files
 for file in "${required_files[@]}"; do
     if ! file_exists "$file"; then
-        echo "Required file not found: $file"
+        echo -e "\e[1m\e[31mRequired file not found: \e[34m$file\e[31m\e[0m"
         echo "Please run this script in the direcotry where the script and service files are."
         echo "Current directory: $SETUP_DIR"
         exit 10
@@ -188,7 +188,7 @@ else
 
         # Install necessary packages based on distribution
         if ! install_packages; then
-            echo "Failed to install necessary packages. Exiting."
+            echo -e "\e[1m\e[31mFailed to install necessary packages. Exiting.\e[0m"
             exit 1
         fi
 
@@ -208,7 +208,7 @@ else
 
         echo " ectool installation complete."
     else
-        echo "Installation aborted."
+        echo -e "\e[1m\e[31mInstallation aborted.\e[0m"
     fi
 fi
 
