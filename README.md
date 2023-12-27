@@ -21,3 +21,5 @@ sudo bash ./setup.sh
 ```
 git clone https://github.com/Player6734/power-led.git /home/$USER/Downloads/power-led_SETUP ; cd /home/$USER/Downloads/power-led_SETUP ; sudo bash ./setup.sh ; cd ; rm -rf /home/$USER/Downloads/power-led_SETUP
 ```
+# Issues
+- The light hangs on for too long when laptop is shutdown or restarted. (WIP) 
