@@ -4,7 +4,7 @@ After=suspend.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c 'sleep 1.9; /usr/bin/bash /usr/local/bin/power-led-on.sh'
+ExecStart=/bin/sh -c 'sleep 1.81; /usr/bin/bash /usr/local/bin/power-led-on.sh'
 
 [Install]
 WantedBy=multi-user.target
