@@ -24,14 +24,15 @@ required_files=(
 # Function to ask yes/no question
 ask_yes_or_no() {
     while true; do
-        read -p "$1 (Y/): " choice
+        read -p "\e[32m$1 \e[34m(Y/n)\e[32m:\e[0m " choice
         case "$choice" in
-            [Yy]* ) return 0;;
+            [Yy]*|"" ) return 0;;  # Default to "Y" if Enter is pressed
             [Nn]* ) return 1;;
             * ) echo -e "\e[1m\e[31mPlease answer yes or no.\e[0m";;
         esac
     done
 }
+
 
 # Function to ask for laptop generation
 ask_laptop_generation() {
