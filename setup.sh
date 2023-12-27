@@ -56,14 +56,14 @@ ask_laptop_generation() {
 
 determine_laptop_generation() {
     cpu_info=$(grep -m 1 'model name' /proc/cpuinfo)
-    echo -e "\e[1m\e[34mDetected CPU: \e[34m$cpu_info\e[0m"
+    echo -e "\e[1m\e[32mDetected CPU: \e[34m$cpu_info\e[0m"
 
     if [[ $cpu_info == *"11th Gen"* ]]; then
         BOARD="hx20" # 11th Generation
-        echo -e "\e[1m\e[34mDetected 11th Generation Intel Processor. Setting BOARD to hx20.\e[0m"
+        echo -e "\e[1m\e[32mDetected 11th Generation Intel Processor. Setting BOARD to hx20.\e[0m"
     elif [[ $cpu_info == *"12th Gen"* ]]; then
         BOARD="hx30" # 12th Generation
-        echo -e "\e[1m\e[34mDetected 12th Generation Intel Processor. Setting BOARD to hx30.\e[0m"
+        echo -e "\e[1m\e[32mDetected 12th Generation Intel Processor. Setting BOARD to hx30.\e[0m"
     else
         echo -e "\e[1m\e[31mUnable to automatically determine the Framework Laptop generation.\e[0m"
         echo -e "\e[1m\e[34mFalling back to manual selection.\e[0m"
