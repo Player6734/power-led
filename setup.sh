@@ -29,7 +29,7 @@ ask_yes_or_no() {
     local reset=$(tput sgr0)
     
     while true; do
-        read -p "${bold}${green}$1 ${blue}(Y/N)${green}:${reset} " choice
+        read -p "${bold}${green}$1 ${blue}(Y/n)${green}:${reset} " choice
         case "$choice" in
             [Yy]*|"" ) return 0;;  # Default to "Y" if Enter is pressed
             [Nn]* ) return 1;;
