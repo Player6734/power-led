@@ -25,14 +25,15 @@ required_files=(
 ask_yes_or_no() {
     local green=$(tput setaf 2)
     local blue=$(tput setaf 4)
+    local bold=$(tput bold)
     local reset=$(tput sgr0)
     
     while true; do
-        read -p "${green}$1 ${blue}(Y/N)${green}:${reset} " choice
+        read -p "${bold}${green}$1 ${blue}(Y/N)${green}:${reset} " choice
         case "$choice" in
             [Yy]*|"" ) return 0;;  # Default to "Y" if Enter is pressed
             [Nn]* ) return 1;;
-            * ) echo -e "${green}${bold}Please answer yes or no.${reset}";;
+            * ) echo -e "\e[1m\e[31mPlease answer yes or no.\e[0m";;
         esac
     done
 }
