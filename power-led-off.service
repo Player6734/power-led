@@ -1,5 +1,6 @@
 [Unit]
 Description=Turn off power LED on shutdown or sleep
+DefaultDependencies=no
 Before=shutdown.target sleep.target
 
 [Service]
@@ -7,4 +8,4 @@ Type=oneshot
 ExecStart=/bin/sh -c '/usr/local/bin/ectool led power off'
 
 [Install]
-WantedBy=sysinit.target
+WantedBy=shutdown.target sleep.target
