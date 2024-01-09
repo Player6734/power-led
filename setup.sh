@@ -215,15 +215,15 @@ echo -e "\e[1m\e[32mmarking scripts as executable\e[0m"
 chmod +x $SH_PLON
 chmod +x $SH_PLL
 echo -e "\e[1m\e[32mmoving scripts to new directory. (/usr/local/bin/)\e[0m"
-mv $SH_PLON /usr/local/bin/
-mv $SH_PLL /usr/local/bin/
+mv $SH_PLON /usr/local/bin/$SH_PLON
+mv $SH_PLL /usr/local/bin/$SH_PLL
 
 echo -e "\e[1m\e[32mmoving service files to new directory.\e[0m"
 echo -e "\e[1m\e[32m(/etc/systemd/system/)\e[0m"
-mv $PLL /etc/systemd/system/
-mv $PLOFF /etc/systemd/system/
-mv $PLON /etc/systemd/system/
-mv $CSF /etc/systemd/system/
+mv $PLL /etc/systemd/system/$PLL
+mv $PLOFF /etc/systemd/system/$PLOFF
+mv $PLON /etc/systemd/system/$PLON
+mv $CSF /etc/systemd/system/$CSF
 
 echo -e "\e[1m\e[32menabling $PLOFF\e[0m"
 restorecon -v /etc/systemd/system/$PLOFF
