@@ -35,4 +35,4 @@ rm -rf /home/$USER/Downloads/power-led_SETUP
 ```
 
 # Issues
-- The light hangs on for too long when laptop is shutdown or restarted. (WIP) 
+- ~~The light hangs on for too long when laptop is shutdown or restarted. (WIP)~~
