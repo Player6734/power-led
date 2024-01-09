@@ -4,7 +4,7 @@ Before=shutdown.target sleep.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c 'sleep 1.8; /usr/local/bin/ectool led power off'
+ExecStart=/bin/sh -c '/usr/local/bin/ectool led power off'
 
 [Install]
 WantedBy=sysinit.target
