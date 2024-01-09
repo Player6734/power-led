@@ -220,10 +220,10 @@ mv $SH_PLL /usr/local/bin/$SH_PLL
 
 echo -e "\e[1m\e[32mmoving service files to new directory.\e[0m"
 echo -e "\e[1m\e[32m(/etc/systemd/system/)\e[0m"
-mv $PLL /etc/systemd/system/$PLL
-mv $PLOFF /etc/systemd/system/$PLOFF
-mv $PLON /etc/systemd/system/$PLON
-mv $CSF /etc/systemd/system/$CSF
+mv "$SETUP_DIR/$PLL" "/etc/systemd/system/$PLL"
+mv "$SETUP_DIR/$PLOFF" "/etc/systemd/system/$PLOFF"
+mv "$SETUP_DIR/$PLON" "/etc/systemd/system/$PLON"
+mv "$SETUP_DIR/$CSF" "/etc/systemd/system/$CSF"
 
 echo -e "\e[1m\e[32menabling $PLOFF\e[0m"
 restorecon -v /etc/systemd/system/$PLOFF
