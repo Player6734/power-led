@@ -8,6 +8,7 @@ After seeing that it was possible to change the LED color of the power button i 
 
 # installation:
 ## One line command:
+This command has been tested on: Ubuntu, Fedora and Arch
 ```
 git clone https://github.com/Player6734/power-led.git /home/$USER/Downloads/power-led_SETUP ; cd /home/$USER/Downloads/power-led_SETUP ; sudo bash ./setup.sh ; cd ; rm -rf /home/$USER/Downloads/power-led_SETUP
 ```
