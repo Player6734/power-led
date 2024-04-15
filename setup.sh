@@ -110,7 +110,7 @@ install_packages() {
     # Distributions typically using zypper
     elif grep -qEi "(suse|opensuse|mageia|pclinuxos)" /etc/os-release; then
         echo -e "\e[1m\e[32mDetected SUSE, OpenSUSE, Mageia, or PCLinuxOS.\e[0m"
-        packages=(arm-none-eabi-gcc arm-none-eabi-newlib libftdi-devel make pkg-config)
+        packages=(arm-none-eabi-gcc3 arm-none-eabi-newlib libftdi-devel make pkg-config)
         for pkg in "${packages[@]}"; do
             if ! zypper se --installed-only "$pkg" &> /dev/null; then
                 echo -e "\e[1m\e[32mInstalling \e[34m$pkg\e[0m"
