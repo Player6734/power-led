@@ -6,9 +6,13 @@ an easy and straightforward way to install ectool, and power-led at the same tim
 
 After seeing that it was possible to change the LED color of the power button i thought it would be great to use it as battery indicator, from this i made i tiny 10 lines script that would change it automatically. from that point it escalated into service files and i enjoyed the journey so continued, now i made a setup to automatically deploy it, download ectool, move it and most importantly: **it cleans up after itself**! Hope you like it!
 
+**importand note**: The ectool binary has to be in the /usr/local/bin directory for the .service files and the power-led-loop.sh file to work.
+
 # installation:
 ## One line command:
-This command has been tested on: Ubuntu, Fedora and Arch
+This command has been tested on: Ubuntu, Fedora, Arch and OpenSUSE Tumbleweed.
+
+Special case for Opensuse Tumbleweed, when trying to install `libftdi1-devel` in the setup.sh file (this option is activated when the script downloads ectool), it will be flagged as failure even if it worked, this can be prevented by installing `libftdi1-devel` outside of the script and then running setup.sh or by running the script twice.
 ```
 git clone https://github.com/Player6734/power-led.git /home/$USER/Downloads/power-led_SETUP ; cd /home/$USER/Downloads/power-led_SETUP ; sudo bash ./setup.sh ; cd ; rm -rf /home/$USER/Downloads/power-led_SETUP
 ```
